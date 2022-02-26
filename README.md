@@ -1,2 +1,3 @@
-# shields.io-badges
-Repository for shields.io badges for private CI results
+# shields.io-badge-results
+
+Repository for [shields.io](https://shields.io/) badge results from private CI builds.
