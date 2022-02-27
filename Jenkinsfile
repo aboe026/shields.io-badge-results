@@ -42,6 +42,10 @@ node {
             sh 'npm run lint'
           }
 
+          stage('Validate Results') {
+            sh 'npm run validate:results'
+          }
+
           stage('Unit Tests') {
             try {
               sh 'npm run test:unit:xml'
