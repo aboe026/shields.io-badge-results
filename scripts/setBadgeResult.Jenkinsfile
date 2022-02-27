@@ -63,16 +63,20 @@ node {
           }
 
           stage('Commit') {
+            sh 'git config --global user.email "adamboe@outlook.com"'
+            sh 'git config --global user.name "Adam Boe"'
             sh 'git status'
             sh 'git add badge-results/*'
             sh 'git status'
-            sh 'git diff .'
+            sh 'git diff --cached'
             sh "git commit -m 'Set ${label} badge for ${repo}'"
             sh 'git status'
           }
 
           stage('Push') {
-            // sh 'git push origin main'
+            sshagent (credentials: ['github-ssh']) {
+              // sh 'git push origin main'
+            }
           }
         }
       }
