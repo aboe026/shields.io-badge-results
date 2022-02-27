@@ -100,6 +100,30 @@ describe('Args Unit Tests', () => {
           process.argv = ogArgs
         }
       })
+      it('throws error if color is not a valid option', () => {
+        const ogArgs = process.argv
+        try {
+          const color = 'azure'
+          process.argv = [
+            path.join(__dirname, '../../node_modules/ts-node/dist/bin.js'),
+            path.join(__dirname, '../../src/index.ts'),
+            '--repo="test-repo"',
+            '--label="test-label"',
+            '--message="test-message"',
+            `--color=${color}`,
+          ]
+          const exitSpy = jest.spyOn(process, 'exit').mockImplementation()
+          const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation()
+          Args.get()
+          expect(exitSpy).toHaveBeenCalledWith(1)
+          expect(consoleErrorSpy).toHaveBeenCalledTimes(3)
+          expect(consoleErrorSpy).toHaveBeenLastCalledWith(
+            `Invalid values:\n  Argument: color, Given: "${color}", Choices: "brightgreen", "green", "yellowgreen", "yellow", "orange", "red", "blue", "lightgrey"`
+          )
+        } finally {
+          process.argv = ogArgs
+        }
+      })
     })
     describe('valid', () => {
       it('returns arguments without branch specified', () => {

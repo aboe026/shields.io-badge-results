@@ -6,20 +6,35 @@ import execa from './helpers/execute-async'
 
 describe('Set Badge Result E2E Tests', () => {
   describe('invalid', () => {
-    it('throws error if missing all parameters', async () => {
+    it('throws error if missing all required parameters', async () => {
       await expect(runSetBadge('')).rejects.toThrow(/Missing required arguments: repo, label, message, color/)
     })
-    it('throws error if missing required parameters except repo', async () => {
-      await expect(runSetBadge('--repo="test"')).rejects.toThrow(/Missing required arguments: label, message, color/)
+    it('throws error if all required parameters specified except repo', async () => {
+      await expect(runSetBadge('--label="test-label" --message="test-message" --color="green"')).rejects.toThrow(
+        /Missing required argument: repo/
+      )
     })
-    it('throws error if missing required parameters except label', async () => {
-      await expect(runSetBadge('--label="test"')).rejects.toThrow(/Missing required arguments: repo, message, color/)
+    it('throws error if all required parameters specified except label', async () => {
+      await expect(runSetBadge('--repo="test-repo" --message="test-message" --color="green"')).rejects.toThrow(
+        /Missing required argument: label/
+      )
     })
-    it('throws error if missing required parameters except message', async () => {
-      await expect(runSetBadge('--message="test"')).rejects.toThrow(/Missing required arguments: repo, label, color/)
+    it('throws error if all required parameters specified except message', async () => {
+      await expect(runSetBadge('--repo="test-repo" --label="test-label" --color="green"')).rejects.toThrow(
+        /Missing required argument: message/
+      )
     })
-    it('throws error if missing required parameters except color', async () => {
-      await expect(runSetBadge('--color="test"')).rejects.toThrow(/Missing required arguments: repo, label, message/)
+    it('throws error if all required parameters specified except color', async () => {
+      await expect(runSetBadge('--repo="test-repo" --label="test-label" --message="test-message"')).rejects.toThrow(
+        /Missing required argument: color/
+      )
+    })
+    it('throws error if color specified is not a valid option', async () => {
+      await expect(
+        runSetBadge('--repo="test-repo" --label="test-label" --message="test-message" --color="argent"')
+      ).rejects.toThrow(
+        /Invalid values:\n(\s+)Argument: color, Given: "argent", Choices: "brightgreen", "green", "yellowgreen", "yellow", "orange", "red", "blue", "lightgrey"/
+      )
     })
   })
   describe('valid', () => {
