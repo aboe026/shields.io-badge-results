@@ -76,6 +76,8 @@ node {
 
                     stage('Push') {
                         sshagent(credentials: ['github-ssh']) {
+                            sh 'mkdir -p ~/.ssh'
+                            sh 'ssh-keyscan -t rsa github.com >> ~/.ssh/known_hosts'
                             sh "git push origin ${branch}"
                         }
                     }
