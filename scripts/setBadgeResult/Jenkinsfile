@@ -34,6 +34,7 @@ node {
                             stage('Checkout') {
                                 def vars = checkout scm
                                 branch = vars.GIT_BRANCH.replace('origin/', '')
+                                sh "git checkout ${branch}" // need this to get past "HEAD detached"/"src refspec ... does not match any" states/errors
                             }
 
                             stage('Install') {
