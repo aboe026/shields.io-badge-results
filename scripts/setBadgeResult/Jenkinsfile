@@ -13,6 +13,7 @@ node {
     def workDir = "${WORKSPACE}/${env.BRANCH_NAME}-${env.BUILD_ID}"
     def nodeImage = 'node:16'
     def version
+    def branch
     def exceptionThrown = false
     try {
         ansiColor('xterm') {
@@ -31,7 +32,8 @@ node {
                         },
                         'proj': {
                             stage('Checkout') {
-                                checkout scm
+                                def vars = checkout scm
+                                branch = vars.GIT_BRANCH.replace('origin/', '')
                             }
 
                             stage('Install') {
@@ -73,7 +75,7 @@ node {
 
                     stage('Push') {
                         sshagent(credentials: ['github-ssh']) {
-                            sh "git push origin ${env.GIT_BRANCH.replace('origin/', 'origin ')}"
+                            sh "git push origin ${branch}"
                         }
                     }
                 }
