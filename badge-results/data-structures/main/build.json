@@ -2,5 +2,5 @@
   "schemaVersion": 1,
   "label": "build",
   "message": "passing",
-  "color": "brightgreen"
+  "color": "green"
 }

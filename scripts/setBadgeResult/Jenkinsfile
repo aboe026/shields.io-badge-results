@@ -1,3 +1,13 @@
+properties([
+    parameters([
+        string(name: 'repo', description: 'The repository the badge result is for'),
+        string(name: 'branch', defaultValue: 'main', description: 'The branch in the respository the badge result is for'),
+        string(name: 'label', description: 'The name the badge should have'),
+        string(name: 'message', description: 'The value the badge should have'),
+        choice(name: 'color', choices: ['brightgreen', 'green', 'yellowgreen', 'yellow', 'orange', 'red', 'blue', 'lightgrey'], description: 'The color the badge should have')
+    ])
+])
+
 node {
     def packageJson
     def workDir = "${WORKSPACE}/${env.BRANCH_NAME}-${env.BUILD_ID}"
@@ -36,40 +46,34 @@ node {
                         currentBuild.displayName = version
                     }
 
-                    stage('Lint') {
-                        sh 'npm run lint'
+                    stage('Run') {
+                        sh """npm start -- \
+                            --repo='${params.repo}' \
+                            --branch='${params.branch}' \
+                            --label='${params.label}' \
+                            --message='${params.message}' \
+                            --color='${params.color}' \
+                        """
                     }
 
                     stage('Validate Results') {
                         sh 'npm run validate:results'
                     }
 
-                    stage('Unit Tests') {
-                        try {
-                            sh 'npm run test:unit:xml'
-                        } catch (err) {
-                            exceptionThrown = true
-                            println 'Exception was caught in try block of unit tests stage.'
-                            println err
-                        } finally {
-                            junit testResults: 'test-results/unit.xml', allowEmptyResults: true
-                            cobertura coberturaReportFile: 'coverage/unit/cobertura-coverage.xml'
-                        }
+                    stage('Commit') {
+                        sh 'git config --global user.email "adamboe@outlook.com"'
+                        sh 'git config --global user.name "Adam Boe"'
+                        sh 'git status'
+                        sh 'git add badge-results/*'
+                        sh 'git status'
+                        sh 'git diff --cached'
+                        sh "git commit -m 'Set ${label} badge for ${repo}'"
+                        sh 'git status'
                     }
 
-                    stage('E2E Tests') {
-                        try {
-                            sh 'npm run test:e2e:xml'
-                        } catch (err) {
-                            exceptionThrown = true
-                            println 'Exception was caught in try block of e2e tests stage.'
-                            println err
-                        } finally {
-                            junit testResults: 'test-results/e2e.xml', allowEmptyResults: true
-                            def e2eDebugLogs = 'test/e2e/.temp-work-dir/e2e-debug.txt'
-                            if (fileExists(e2eDebugLogs)) {
-                                archiveArtifacts artifacts: e2eDebugLogs
-                            }
+                    stage('Push') {
+                        sshagent(credentials: ['github-ssh']) {
+                            sh 'git push origin main'
                         }
                     }
                 }
