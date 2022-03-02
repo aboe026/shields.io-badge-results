@@ -75,7 +75,7 @@ node {
 
           stage('Push') {
             sshagent (credentials: ['github-ssh']) {
-              // sh 'git push origin main'
+              sh 'git push origin main'
             }
           }
         }
