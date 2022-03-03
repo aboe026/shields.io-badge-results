@@ -65,16 +65,22 @@ node {
                     }
 
                     stage('Commit') {
+                        println 'Checking for changes with "git status"...'
                         def gitStatus = sh(
                             script: 'git status',
                             returnStdout: true
                         ).trim()
+                        println gitStatus
                         changesToPush = !gitStatus.contains('nothing to commit')
                         if (changesToPush) {
+                            println '...changes detected, pushing'
                             sh 'git config --global user.email "adamboe@outlook.com"'
                             sh 'git config --global user.name "Adam Boe"'
                             sh 'git add badge-results/*'
+                            sh 'git diff --cached'
                             sh "git commit -m 'Set ${label} badge for ${repo}' -m 'Courtesy of automated job #${env.BUILD_ID}.'"
+                        } else {
+                            println '...no changes detected, not pushing'
                         }
                     }
 
