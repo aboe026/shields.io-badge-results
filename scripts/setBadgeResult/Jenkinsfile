@@ -48,7 +48,7 @@ node {
                         packageJson = readJSON file: 'package.json'
                         version = "${packageJson.version}+${env.BUILD_ID}"
                         currentBuild.displayName = version
-                        currentBuild.description = "${params.repo} -- ${params.label}:${params.message}"
+                        currentBuild.description = "${params.repo} | ${params.label}:${params.message}"
                     }
 
                     stage('Run') {
@@ -82,7 +82,7 @@ node {
                             sh "git commit -m 'Set ${label} badge for ${repo}' -m 'Courtesy of automated job #${env.BUILD_ID}.'"
                         } else {
                             println '...no changes detected, not pushing'
-                            currentBuild.description += ' NC'
+                            currentBuild.description += ' | no changes'
                         }
                     }
 
@@ -92,7 +92,7 @@ node {
                                 sh 'mkdir -p ~/.ssh'
                                 sh 'ssh-keyscan -t rsa github.com >> ~/.ssh/known_hosts'
                                 sh "git push origin ${branch}"
-                                currentBuild.description += ' PU'
+                                currentBuild.description += ' | pushed update'
                             }
                         }
                     }
