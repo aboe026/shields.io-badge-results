@@ -70,7 +70,7 @@ node {
                         sh 'git add badge-results/*'
                         sh 'git status'
                         sh 'git diff --cached'
-                        sh "git commit -m 'Set ${label} badge for ${repo}'"
+                        sh "git commit -m 'Set ${label} badge for ${repo}' -m 'Courtesy of automated job #${env.BUILD_ID}.'"
                         sh 'git status'
                     }
 
