@@ -1,5 +1,7 @@
 @Library('aboe026') _ // groovylint-disable-line VariableName, UnusedVariable
 
+import org.aboe026.ShieldsIoBadges
+
 node {
     def packageJson
     def workDir = "${WORKSPACE}/${env.BRANCH_NAME}-${env.BUILD_ID}"
