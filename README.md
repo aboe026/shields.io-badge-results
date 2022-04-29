@@ -1,5 +1,8 @@
 # shields.io-badge-results
 
+![build](https://img.shields.io/endpoint?url=https://aboe026.github.io/shields.io-badge-results/badge-results/shields.io-badge-results/main/build.json)
+![coverage](https://img.shields.io/endpoint?url=https://aboe026.github.io/shields.io-badge-results/badge-results/shields.io-badge-results/main/coverage.json)
+
 Repository for [shields.io](https://shields.io/) badge results from private CI builds.
 
 The [badge-results](badge-results) directory contains [JSON endpoint](https://shields.io/endpoint) files to be referenced by GitHub repositories for their shields.io badge definitions.
