@@ -1,9 +1,16 @@
+@Library('aboe026') _ // groovylint-disable-line VariableName, UnusedVariable
+
+import org.aboe026.ShieldsIoBadges
+
 node {
     def packageJson
     def workDir = "${WORKSPACE}/${env.BRANCH_NAME}-${env.BUILD_ID}"
     def nodeImage = 'node:16'
     def version
     def exceptionThrown = false
+    def badges = new ShieldsIoBadges(this, 'shields.io-badge-results')
+    def uploadBadges = env.BRANCH_NAME == 'main'
+
     try {
         ansiColor('xterm') {
             dir(workDir) {
@@ -54,6 +61,11 @@ node {
                         } finally {
                             junit testResults: 'test-results/unit.xml', allowEmptyResults: true
                             cobertura coberturaReportFile: 'coverage/unit/cobertura-coverage.xml'
+                            if (uploadBadges) {
+                                badges.uploadCoberturaCoverageResult(
+                                    branch: env.BRANCH_NAME
+                                )
+                            }
                         }
                     }
 
@@ -80,6 +92,11 @@ node {
         println 'Exception was caught in try block of jenkins job.'
         println err
     } finally {
+        if (uploadBadges) {
+            badges.uploadBuildResult(
+                branch: env.BRANCH_NAME
+            )
+        }
         stage('Cleanup') {
             try {
                 sh "rm -rf ${workDir}"
