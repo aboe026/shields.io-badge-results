@@ -13,7 +13,7 @@ describe('Badge Result Unit Tests', () => {
       const label = 'Test-Case-Label'
       const message = 'test case message'
       const color = COLOR.Green
-      jest.spyOn(Args, 'get').mockReturnValue({
+      jest.spyOn(Args, 'get').mockResolvedValue({
         repo,
         branch,
         label,
@@ -22,7 +22,7 @@ describe('Badge Result Unit Tests', () => {
       })
       jest.spyOn(fs, 'ensureDir').mockImplementation(() => Promise.resolve())
       const writeFileSpy = jest.spyOn(fs, 'writeFile').mockImplementation(() => Promise.resolve())
-      await BadgeResult.set(Args.get())
+      await BadgeResult.set(await Args.get())
       expect(writeFileSpy.mock.calls).toEqual([
         [
           path.join(__dirname, '../../badge-results', repo, branch, 'test-case-label.json'),

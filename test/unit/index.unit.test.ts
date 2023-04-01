@@ -4,7 +4,7 @@ import BadgeResult from '../../src/badge-result'
 
 describe('Index Unit Tests', () => {
   it('calls setBadgeResult', async () => {
-    jest.spyOn(Args, 'get').mockReturnValue({
+    jest.spyOn(Args, 'get').mockResolvedValue({
       repo: 'test-call-repo',
       branch: 'test-call-branch',
       label: 'test-call-label',
@@ -16,6 +16,7 @@ describe('Index Unit Tests', () => {
     await jest.isolateModules(async () => {
       await import('../../src/index')
     })
+    await new Promise((resolve) => setTimeout(resolve, 0)) // need explicit sleep here because isolateModules does not properly await :/
     expect(setBadgeResultsSpy).toHaveBeenCalled()
     expect(exitSpy.mock.calls).toEqual([])
   })

@@ -12,8 +12,8 @@ export type BadgeArguments = {
 }
 
 export default class Args {
-  static get(): BadgeArguments {
-    const args = yargs(hideBin(process.argv))
+  static async get(): Promise<BadgeArguments> {
+    const args = await yargs(hideBin(process.argv))
       .options({
         repo: {
           alias: 'r',
