@@ -6,13 +6,13 @@ import COLOR from '../../src/colors'
 describe('Args Unit Tests', () => {
   describe('get', () => {
     describe('invalid', () => {
-      it('throws error if no required parameters specified', () => {
+      it('throws error if no required parameters specified', async () => {
         const ogArgs = process.argv
         try {
           process.argv = []
           const exitSpy = jest.spyOn(process, 'exit').mockImplementation()
           const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation()
-          Args.get()
+          await Args.get()
           expect(exitSpy).toHaveBeenCalledWith(1)
           expect(consoleErrorSpy).toHaveBeenCalledTimes(3)
           expect(consoleErrorSpy).toHaveBeenLastCalledWith('Missing required arguments: repo, label, message, color')
@@ -20,7 +20,7 @@ describe('Args Unit Tests', () => {
           process.argv = ogArgs
         }
       })
-      it('throws error if all required parameters specified except repo', () => {
+      it('throws error if all required parameters specified except repo', async () => {
         const ogArgs = process.argv
         try {
           process.argv = [
@@ -32,7 +32,7 @@ describe('Args Unit Tests', () => {
           ]
           const exitSpy = jest.spyOn(process, 'exit').mockImplementation()
           const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation()
-          Args.get()
+          await Args.get()
           expect(exitSpy).toHaveBeenCalledWith(1)
           expect(consoleErrorSpy).toHaveBeenCalledTimes(3)
           expect(consoleErrorSpy).toHaveBeenLastCalledWith('Missing required argument: repo')
@@ -40,7 +40,7 @@ describe('Args Unit Tests', () => {
           process.argv = ogArgs
         }
       })
-      it('throws error if all required parameters specified except label', () => {
+      it('throws error if all required parameters specified except label', async () => {
         const ogArgs = process.argv
         try {
           process.argv = [
@@ -52,7 +52,7 @@ describe('Args Unit Tests', () => {
           ]
           const exitSpy = jest.spyOn(process, 'exit').mockImplementation()
           const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation()
-          Args.get()
+          await Args.get()
           expect(exitSpy).toHaveBeenCalledWith(1)
           expect(consoleErrorSpy).toHaveBeenCalledTimes(3)
           expect(consoleErrorSpy).toHaveBeenLastCalledWith('Missing required argument: label')
@@ -60,7 +60,7 @@ describe('Args Unit Tests', () => {
           process.argv = ogArgs
         }
       })
-      it('throws error if all required parameters specified except message', () => {
+      it('throws error if all required parameters specified except message', async () => {
         const ogArgs = process.argv
         try {
           process.argv = [
@@ -72,7 +72,7 @@ describe('Args Unit Tests', () => {
           ]
           const exitSpy = jest.spyOn(process, 'exit').mockImplementation()
           const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation()
-          Args.get()
+          await Args.get()
           expect(exitSpy).toHaveBeenCalledWith(1)
           expect(consoleErrorSpy).toHaveBeenCalledTimes(3)
           expect(consoleErrorSpy).toHaveBeenLastCalledWith('Missing required argument: message')
@@ -80,7 +80,7 @@ describe('Args Unit Tests', () => {
           process.argv = ogArgs
         }
       })
-      it('throws error if all required parameters specified except color', () => {
+      it('throws error if all required parameters specified except color', async () => {
         const ogArgs = process.argv
         try {
           process.argv = [
@@ -92,7 +92,7 @@ describe('Args Unit Tests', () => {
           ]
           const exitSpy = jest.spyOn(process, 'exit').mockImplementation()
           const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation()
-          Args.get()
+          await Args.get()
           expect(exitSpy).toHaveBeenCalledWith(1)
           expect(consoleErrorSpy).toHaveBeenCalledTimes(3)
           expect(consoleErrorSpy).toHaveBeenLastCalledWith('Missing required argument: color')
@@ -100,7 +100,7 @@ describe('Args Unit Tests', () => {
           process.argv = ogArgs
         }
       })
-      it('throws error if color is not a valid option', () => {
+      it('throws error if color is not a valid option', async () => {
         const ogArgs = process.argv
         try {
           const color = 'azure'
@@ -114,7 +114,7 @@ describe('Args Unit Tests', () => {
           ]
           const exitSpy = jest.spyOn(process, 'exit').mockImplementation()
           const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation()
-          Args.get()
+          await Args.get()
           expect(exitSpy).toHaveBeenCalledWith(1)
           expect(consoleErrorSpy).toHaveBeenCalledTimes(3)
           expect(consoleErrorSpy).toHaveBeenLastCalledWith(
@@ -126,7 +126,7 @@ describe('Args Unit Tests', () => {
       })
     })
     describe('valid', () => {
-      it('returns arguments without branch specified', () => {
+      it('returns arguments without branch specified', async () => {
         const ogArgs = process.argv
         try {
           const repo = 'test-repo'
@@ -143,7 +143,7 @@ describe('Args Unit Tests', () => {
           ]
           const exitSpy = jest.spyOn(process, 'exit').mockImplementation()
           const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation()
-          expect(Args.get()).toEqual({
+          await expect(Args.get()).resolves.toEqual({
             repo,
             branch: 'main',
             label,
@@ -156,7 +156,7 @@ describe('Args Unit Tests', () => {
           process.argv = ogArgs
         }
       })
-      it('returns arguments with branch specified', () => {
+      it('returns arguments with branch specified', async () => {
         const ogArgs = process.argv
         try {
           const repo = 'test-repo'
@@ -175,7 +175,7 @@ describe('Args Unit Tests', () => {
           ]
           const exitSpy = jest.spyOn(process, 'exit').mockImplementation()
           const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation()
-          expect(Args.get()).toEqual({
+          await expect(Args.get()).resolves.toEqual({
             repo,
             branch,
             label,

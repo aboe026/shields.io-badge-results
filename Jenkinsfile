@@ -5,7 +5,7 @@ import org.aboe026.ShieldsIoBadges
 node {
     def packageJson
     def workDir = "${WORKSPACE}/${env.BRANCH_NAME}-${env.BUILD_ID}"
-    def nodeImage = 'node:16'
+    def nodeImage = 'node:18'
     def version
     def exceptionThrown = false
     def badges = new ShieldsIoBadges(this, 'shields.io-badge-results')
@@ -60,9 +60,18 @@ node {
                             println err
                         } finally {
                             junit testResults: 'test-results/unit.xml', allowEmptyResults: true
-                            cobertura coberturaReportFile: 'coverage/unit/cobertura-coverage.xml'
+                            recordCoverage(
+                                skipPublishingChecks: true,
+                                sourceCodeRetention: 'EVERY_BUILD',
+                                tools: [
+                                    [
+                                        parser: 'COBERTURA',
+                                        pattern: 'coverage/unit/cobertura-coverage.xml'
+                                    ]
+                                ]
+                            )
                             if (uploadBadges) {
-                                badges.uploadCoberturaCoverageResult(
+                                badges.uploadCoverageResult(
                                     branch: env.BRANCH_NAME
                                 )
                             }

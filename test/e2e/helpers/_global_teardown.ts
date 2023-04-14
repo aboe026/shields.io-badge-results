@@ -1,4 +1,4 @@
-import rimraf from 'rimraf'
+import fs from 'fs-extra'
 import path from 'path'
 
 /**
@@ -7,18 +7,12 @@ import path from 'path'
 
 export default async (): Promise<void> => {
   if (process.env.DEBUG !== 'true') {
-    await removeTempResults()
-  }
-}
-
-async function removeTempResults(): Promise<void> {
-  await new Promise((resolve, reject) => {
-    rimraf(path.join(__dirname, '../../../badge-results/.temp-e2e-test-*'), (error) => {
-      if (error) {
-        reject(error)
-      } else {
-        resolve(true)
+    const badgeDir = path.join(__dirname, '../../../badge-results')
+    const subdirs = await fs.readdir(badgeDir)
+    for (const subdir of subdirs) {
+      if (subdir.startsWith('.temp-e2e-test-')) {
+        await fs.remove(path.join(badgeDir, subdir))
       }
-    })
-  })
+    }
+  }
 }
