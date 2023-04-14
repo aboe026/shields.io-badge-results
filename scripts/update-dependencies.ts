@@ -7,7 +7,9 @@ import { promisify } from 'util'
 import packageJson from '../package.json'
 
 const execa = promisify(exec)
-const DENY_LIST: string[] = []
+const DENY_LIST: string[] = [
+  'open', // only supports ESM
+]
 
 //
 ;(async () => {
